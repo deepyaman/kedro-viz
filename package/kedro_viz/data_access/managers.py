@@ -28,13 +28,17 @@
 """`kedro_viz.data_access.managers` defines data access managers."""
 # pylint: disable=too-many-instance-attributes
 from collections import defaultdict
-from typing import Dict, List, Set, Union
+from typing import Dict, List, Set, Union, Any, Optional
+from kedro.extras.datasets.plotly.plotly_dataset import PlotlyDataSet
+import json
 
 import networkx as nx
 from kedro.io import DataCatalog
 from kedro.pipeline import Pipeline as KedroPipeline
 from kedro.pipeline.node import Node as KedroNode
 from sqlalchemy.orm import Session as DatabaseSession
+from kedro.io.core import get_filepath_str
+import plotly.io as pio
 
 from kedro_viz.constants import DEFAULT_REGISTERED_PIPELINE_ID, ROOT_MODULAR_PIPELINE_ID
 from kedro_viz.models.graph import (
@@ -56,10 +60,14 @@ from .repositories import (
     GraphEdgesRepository,
     GraphNodesRepository,
     ModularPipelinesRepository,
+    PlotRepository,
     RegisteredPipelinesRepository,
     TagsRepository,
 )
 
+def _parse_filepath(dataset_description: Dict[str, Any]) -> Optional[str]:
+    filepath = dataset_description.get("filepath") or dataset_description.get("path")
+    return str(filepath) if filepath else None
 
 class DataAccessManager:
     """Centralised interface for the rest of the application to interact with data repositories."""
@@ -71,6 +79,7 @@ class DataAccessManager:
         self.tags = TagsRepository()
         self.modular_pipelines = ModularPipelinesRepository()
         self._db_session = None
+        self.plots : Set[str] = set()
         # Make sure each registered pipeline has a distinct collection of edges.
         self.edges: Dict[str, GraphEdgesRepository] = defaultdict(GraphEdgesRepository)
         # Make sure the node dependencies are built separately for each registered pipeline.
@@ -166,6 +175,10 @@ class DataAccessManager:
                 if isinstance(output_node, TranscodedDataNode):
                     output_node.original_name = output
                     output_node.original_version = self.catalog.get_dataset(output)
+                
+                dataset = self.catalog.get_dataset(output)
+                if isinstance(dataset,PlotlyDataSet):
+                    self.add_plots(dataset)
 
                 self.modular_pipelines.extract_from_node(output_node)
                 if current_modular_pipeline is not None:
@@ -459,3 +472,29 @@ class DataAccessManager:
                 )
 
         return modular_pipelines_tree
+
+    def add_plots(self, dataset: PlotlyDataSet):
+        load_path = get_filepath_str(dataset._get_load_path(), dataset._protocol)
+        with dataset._fs.open(load_path, **dataset._fs_open_args_load) as fs_file:
+            self.plots.add(json.dumps(json.load(fs_file)))
+
+    def get_plots_html(self) -> str:
+        print('I go here')
+        default_height = "85%"
+        default_width = "85%"
+        html = ''
+        add_js = True
+        for figure in self.plots:
+            html_figure = pio.to_html(
+                json.loads(figure),
+                include_plotlyjs=add_js,
+                full_html=False,
+                default_width=default_width,
+                default_height=default_height,
+            )
+            html = html + html_figure
+            add_js = False
+        return html
+        
+        
+    

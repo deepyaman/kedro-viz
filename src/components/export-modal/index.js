@@ -15,11 +15,12 @@ const ExportModal = ({ graphSize, theme, onToggle, visible }) => {
   }
   return (
     <Modal
-      title="Export pipeline visualisation"
+      title="Export"
       onClose={() => onToggle(false)}
       theme={theme}
       visible={visible.exportModal}>
       <div className="pipeline-export-modal">
+        <h2>Pipeline Visualization</h2>
         <Button
           theme={theme}
           onClick={() => {
@@ -36,6 +37,12 @@ const ExportModal = ({ graphSize, theme, onToggle, visible }) => {
           }}>
           Download SVG
         </Button>
+      </div>
+      <div className="pipeline-export-modal">
+        <h2>Kedro-Viz Plots</h2>
+        <a href="/api/plots" download="Kedro-viz Plots">
+          <Button theme={theme}>Download</Button>
+        </a>
       </div>
     </Modal>
   );

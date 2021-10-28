@@ -27,9 +27,11 @@
 # limitations under the License.
 """`kedro_viz.api.router` defines routes and handling logic for the API."""
 # pylint: disable=missing-function-docstring
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
-
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 from kedro_viz.data_access import data_access_manager
 from kedro_viz.models.graph import (
     DataNode,
@@ -41,6 +43,7 @@ from kedro_viz.models.graph import (
     TranscodedDataNodeMetadata,
 )
 from kedro_viz.services import modular_pipelines_services
+from starlette.routing import request_response
 
 from .responses import (
     APIErrorMessage,
@@ -54,6 +57,21 @@ router = APIRouter(
     responses={404: {"model": APIErrorMessage}},
 )
 
+
+# BASE_DIR = Path(__file__).resolve().parent
+
+_HTML_DIR = Path(__file__).parent.parent.absolute() / "html"
+
+# templates = Jinja2Templates(directory=str(Path(BASE_DIR, 'templates')))
+
+templates = Jinja2Templates(directory=_HTML_DIR / "templates")
+
+@router.get('/plots')
+def display_plots(request: Request):
+    return templates.TemplateResponse('plots.html', {
+        "request":request,
+        "plots_data" : data_access_manager.get_plots_html()
+    })
 
 @router.get("/main", response_model=GraphAPIResponse)
 async def main():
