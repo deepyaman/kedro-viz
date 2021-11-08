@@ -215,7 +215,7 @@ class TrackingDataSet:
 
 @strawberry.type
 class Query:
-    """Query endpoint to get data from the session store"""
+    """Query endpoint to get data from the session stores""" 
 
     @strawberry.field
     def run_tracking_data(self, run_ids: List[ID]) -> List[TrackingDataSet]:
