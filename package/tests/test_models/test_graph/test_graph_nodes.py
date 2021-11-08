@@ -366,7 +366,7 @@ class TestGraphNodeMetadata:
 
     @patch("builtins.__import__", side_effect=import_mock)
     def test_plotly_data_node_dataset_not_exist(self, patched_import):
-        plotly_data_node = MagicMock()
+        plotly_data_node = MagicMock() 
         plotly_data_node.is_plot_node.return_value = True
         plotly_data_node.is_metric_node.return_value = False
         plotly_data_node.kedro_obj._exists.return_value = False
