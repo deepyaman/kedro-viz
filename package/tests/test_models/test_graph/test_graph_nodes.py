@@ -574,6 +574,7 @@ class TestGraphNodeMetadata:
         dataset = MetricsDataSet(filepath=filename)
         data = {"col1": 1, "col2": 0.23, "col3": 0.002}
         dataset.save(data)
+        print(dataset._describe())
         assert DataNodeMetadata.load_latest_tracking_data(dataset) == data
         # to avoid datasets being saved concurrently
         time.sleep(1)
