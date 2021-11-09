@@ -566,11 +566,11 @@ class TestGraphNodeMetadata:
             filepath.write_text(json.dumps(json_content[index]))
         return source_dir
 
-    def test_load_latest_tracking_data(self):
+    def test_load_latest_tracking_data(self, tmp_path):
         # Note - filepath is assigned latest_tracking.json as temp solution instead of
         # tracking_data_filepath as it fails on windows build.
         # This will be cleaned up in the future.
-        filename = "latest_tracking.json"
+        filename = (tmp_path / "latest_tracking.json").as_posix()
         dataset = MetricsDataSet(filepath=filename)
         data = {"col1": 1, "col2": 0.23, "col3": 0.002}
         dataset.save(data)
