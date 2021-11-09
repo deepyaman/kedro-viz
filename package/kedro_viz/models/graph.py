@@ -616,9 +616,11 @@ class DataNodeMetadata(GraphNodeMetadata):
         """
         pattern = str(dataset._get_versioned_path("*"))
         version_paths = sorted(dataset._glob_function(pattern), reverse=True)
+        print(version_paths)
         most_recent = next(
             (path for path in version_paths if dataset._exists_function(path)), None
         )
+        print(most_recent)
         if not most_recent:
             return None
         with dataset._fs.open(most_recent, **dataset._fs_open_args_load) as fs_file:
