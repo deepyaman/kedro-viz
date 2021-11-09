@@ -614,7 +614,10 @@ class DataNodeMetadata(GraphNodeMetadata):
         Returns:
             A dictionary containing json data for the latest version
         """
+        print(dataset)
+        print(dataset._describe)
         pattern = str(dataset._get_versioned_path("*"))
+        print(pattern)
         version_paths = sorted(dataset._glob_function(pattern), reverse=True)
         most_recent = next(
             (path for path in version_paths if dataset._exists_function(path)), None
