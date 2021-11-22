@@ -4,7 +4,7 @@ import { toHumanReadableTime } from '../../../utils/date-utils';
 
 import './run-metadata.css';
 
-const RunMetadata = ({ isSingleRun, runs = [] }) => {
+const RunMetadata = ({ isSingleRun, runs = [], pinnedRun, setPinnedRun }) => {
   let initialState = {};
   for (let i = 0; i < runs.length; i++) {
     initialState[i] = false;
