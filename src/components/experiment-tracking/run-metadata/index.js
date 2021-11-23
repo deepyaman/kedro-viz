@@ -4,6 +4,10 @@ import { toHumanReadableTime } from '../../../utils/date-utils';
 
 import './run-metadata.css';
 
+// checks if value is an empty string, which is the default value returned
+// by the graphql endpoint for empty values
+const checkEmptyValue = (value) => (value !== '' ? value : '-');
+
 const RunMetadata = ({ isSingleRun, runs = [] }) => {
   let initialState = {};
   for (let i = 0; i < runs.length; i++) {
@@ -37,34 +41,38 @@ const RunMetadata = ({ isSingleRun, runs = [] }) => {
                 {isSingleRun ? (
                   <tr>
                     <td className="details-metadata__title" colSpan="2">
-                      {run.title}
+                      {checkEmptyValue(run.title)}
                     </td>
                   </tr>
                 ) : (
                   <tr>
                     {i === 0 ? <td></td> : null}
-                    <td className="details-metadata__title">{run.title}</td>
+                    <td className="details-metadata__title">
+                      {checkEmptyValue(run.title)}
+                    </td>
                   </tr>
                 )}
                 <tr>
                   {i === 0 ? <td>Created By</td> : null}
-                  <td>{run.author || '-'}</td>
+                  <td>{checkEmptyValue(run.author)}</td>
                 </tr>
                 <tr>
                   {i === 0 ? <td>Creation Date</td> : null}
-                  <td>{`${humanReadableTime} (${run.timestamp})` || '-'}</td>
+                  <td>{`${humanReadableTime} (${checkEmptyValue(
+                    run.timestamp
+                  )})`}</td>
                 </tr>
                 <tr>
                   {i === 0 ? <td>Git SHA</td> : null}
-                  <td>{run.gitSha || '-'}</td>
+                  <td>{checkEmptyValue(run.gitSha)}</td>
                 </tr>
                 <tr>
                   {i === 0 ? <td>Git Branch</td> : null}
-                  <td>{run.gitBranch || '-'}</td>
+                  <td>{checkEmptyValue(run.gitBranch)}</td>
                 </tr>
                 <tr>
                   {i === 0 ? <td>Run Command</td> : null}
-                  <td>{run.runCommand || '-'}</td>
+                  <td>{checkEmptyValue(run.runCommand)}</td>
                 </tr>
                 <tr>
                   {i === 0 ? <td>Notes</td> : null}
@@ -73,7 +81,7 @@ const RunMetadata = ({ isSingleRun, runs = [] }) => {
                       className="details-metadata__notes"
                       style={toggleNotes[i] ? { display: 'block' } : null}
                     >
-                      {run.notes}
+                      {checkEmptyValue(run.notes)}
                     </p>
                     {run.notes.length > 100 ? (
                       <button
@@ -82,9 +90,7 @@ const RunMetadata = ({ isSingleRun, runs = [] }) => {
                       >
                         {toggleNotes[i] ? 'Show less' : 'Show more'}
                       </button>
-                    ) : (
-                      '-'
-                    )}
+                    ) : null}
                   </td>
                 </tr>
               </tbody>
