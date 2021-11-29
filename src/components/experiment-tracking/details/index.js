@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useApolloQuery } from '../../../apollo/utils';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
@@ -26,8 +26,6 @@ const Details = ({ selectedRuns, sidebarVisible }) => {
       variables: { runIds: selectedRuns, showDiff: false },
     });
 
-  const [pinnedRun, setPinnedRun] = useState(selectedRuns[0]); // The first selected run is pinned run by default
-
   if (error || trackingError) {
     return null;
   }
@@ -39,13 +37,9 @@ const Details = ({ selectedRuns, sidebarVisible }) => {
       <div
         className={classnames('kedro', 'details-mainframe', {
           'details-mainframe--sidebar-visible': sidebarVisible,
-        })}>
-        <RunMetadata
-          isSingleRun={isSingleRun}
-          runs={runMetadata}
-          pinnedRun={pinnedRun}
-          setPinnedRun={setPinnedRun}
-        />
+        })}
+      >
+        <RunMetadata isSingleRun={isSingleRun} runs={runMetadata} />
         <RunDataset isSingleRun={isSingleRun} trackingData={runTrackingData} />
       </div>
     </>
