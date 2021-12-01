@@ -15,6 +15,7 @@ class RunModel(Base):
 
     id = Column(String, primary_key=True, index=True)
     blob = Column(JSON)
+    
 
     class Config:
         """Supports data model to map to ORM objects"""

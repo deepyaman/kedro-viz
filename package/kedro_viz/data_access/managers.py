@@ -10,6 +10,7 @@ from kedro.io import DataCatalog
 from kedro.pipeline import Pipeline as KedroPipeline
 from kedro.pipeline.node import Node as KedroNode
 from sqlalchemy.orm import Session as DatabaseSession
+from sqlalchemy import event 
 
 from kedro_viz.constants import DEFAULT_REGISTERED_PIPELINE_ID, ROOT_MODULAR_PIPELINE_ID
 from kedro_viz.models.graph import (
@@ -37,7 +38,8 @@ from .repositories import (
 
 logger = logging.getLogger(__name__)
 
-
+def message(self):
+        print('Hello World')
 class DataAccessManager:
     """Centralised interface for the rest of the application to interact with data repositories."""
 
@@ -55,6 +57,8 @@ class DataAccessManager:
             lambda: defaultdict(set)
         )
 
+    
+
     @property
     def db_session(self):  # pragma: no cover
         """Sqlite db connection session"""
@@ -65,6 +69,9 @@ class DataAccessManager:
     @db_session.setter
     def db_session(self, db_session: DatabaseSession):
         self._db_session = db_session
+        event.listen(self._db_session,"after_commit", message)
+
+    
 
     def add_catalog(self, catalog: DataCatalog):
         """Add a catalog to the CatalogRepository.

@@ -8,6 +8,7 @@ from kedro.io import DataCatalog
 from kedro.pipeline import Pipeline
 from watchgod import run_process
 
+
 from kedro_viz.api import apps, responses
 from kedro_viz.data_access import DataAccessManager, data_access_manager
 from kedro_viz.database import create_db_engine
@@ -37,7 +38,6 @@ def populate_data(
         database_engine, session_class = create_db_engine(session_store_location)
         Base.metadata.create_all(bind=database_engine)
         data_access_manager.db_session = session_class()
-
     data_access_manager.add_catalog(catalog)
     data_access_manager.add_pipelines(pipelines)
 

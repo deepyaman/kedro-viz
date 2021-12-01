@@ -8,15 +8,18 @@ from typing import Any, Generator, Type
 
 from kedro.framework.session.store import BaseSessionStore
 from sqlalchemy.orm.session import Session
-
 from kedro_viz.database import create_db_engine
 from kedro_viz.models.run_model import Base, RunModel
+from sqlalchemy import event 
 
+def message(self):
+        print('Hello World')
 
 def get_db(session_class: Type[Session]) -> Generator:
     """Makes connection to the database"""
     try:
         database = session_class()
+        event.listen(database,"after_commit", message)
         yield database
     finally:
         database.close()
