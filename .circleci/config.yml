@@ -171,6 +171,12 @@ commands:
     description: Run build
     steps:
       - checkout
+      - run:
+          name: Where is the home dir
+          command: |
+            pwd
+            ls -la .
+            echo $HOME
       - restore_cache:
           keys:
             - v${CACHE_VERSION}-dependencies-{{ checksum "package.json" }}-{{ checksum "package/requirements.txt" }}-{{ checksum "package/test_requirements.txt" }}
