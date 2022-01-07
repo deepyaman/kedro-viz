@@ -4,7 +4,8 @@
 from sqlalchemy import Column
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql.schema import ForeignKey
-from sqlalchemy.types import JSON, Boolean, Integer, String
+from sqlalchemy.types import JSON, Boolean, Integer, String, DateTime
+from sqlalchemy.sql import func 
 
 Base = declarative_base()
 
@@ -15,6 +16,7 @@ class RunModel(Base):
     __tablename__ = "runs"
 
     id = Column(String, primary_key=True, index=True)
+    created_at = Column(DateTime(timezone=True), nullable=True)
     blob = Column(JSON)
 
     class Config:

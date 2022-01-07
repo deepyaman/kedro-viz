@@ -77,7 +77,7 @@ def get_runs(run_ids: List[ID]) -> List[Run]:
     session = data_access_manager.db_session
     if not session:
         return runs
-    all_run_data = session.query(RunModel).filter(RunModel.id.in_(run_ids)).all()
+    all_run_data = session.query(RunModel).filter(RunModel.id.in_(run_ids)).order_by(RunModel.created_at.desc(),RunModel.id.desc()).all()
     for run_data in all_run_data:
         run = format_run(run_data.id, json.loads(run_data.blob))
         runs.append(run)

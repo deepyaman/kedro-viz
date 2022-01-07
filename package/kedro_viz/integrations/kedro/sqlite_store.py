@@ -9,6 +9,7 @@ from typing import Any, Generator, Type
 
 from kedro.framework.session.store import BaseSessionStore
 from sqlalchemy.orm.session import Session
+from sqlalchemy.sql import func 
 
 from kedro_viz.database import create_db_engine
 from kedro_viz.models.experiments_tracking import Base, RunModel
@@ -65,6 +66,6 @@ class SQLiteStore(BaseSessionStore):
         engine, session_class = create_db_engine(self.location)
         Base.metadata.create_all(bind=engine)
         database = next(get_db(session_class))
-        session_store_data = RunModel(id=self._session_id, blob=self.to_json())
+        session_store_data = RunModel(id=self._session_id, created_at = func.now(), blob=self.to_json())
         database.add(session_store_data)
         database.commit()
