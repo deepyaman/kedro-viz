@@ -23,7 +23,7 @@ describe('NodeListGroup', () => {
     );
     const checkbox = () => wrapper.find('input');
     checkbox().simulate('change', { target: { checked: false } });
-    expect(onToggleChecked.mock.calls.length).toEqual(3);
+    expect(onToggleChecked.mock.calls.length).toEqual(5);
   });
 
   it('handles collapse button click events', () => {
